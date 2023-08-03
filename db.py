@@ -7,12 +7,9 @@ class DbConnection:
         conn = sqlite3.connect("db.db")
         cursor = conn.execute(query)
         conn.commit()
-
-        response = None
-        for row in cursor:
-            response = row
+        lastrowid = cursor.lastrowid
         conn.close()
-        return response
+        return lastrowid
 
     @staticmethod
     def selectQuery(query):
