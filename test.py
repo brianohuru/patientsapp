@@ -2,6 +2,8 @@
 
 from models import Patient, SubCounty, MaritalStatus, Gender
 
+patientsNrBefore = len(Patient().filter())
+
 patient = Patient()
 patient.firstName = "James"
 patient.lastName = "Mwanza"
@@ -13,3 +15,7 @@ patient.telephone = "123456789"
 patient.gender = Gender().get(id=1)
 patient.birthDate = "2000-01-01"
 patient.create()
+
+patientsNrAfter = len(Patient().filter())
+
+print(patientsNrBefore + 1 == patientsNrAfter)
