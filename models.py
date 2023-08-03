@@ -1,7 +1,9 @@
 from db import DbConnection
 
 
-def stringify_kwargs(kwargs):
+def stringify_kwargs(kwargs=None):
+    if len(kwargs.items()) == 0:
+        return ""
     where = []
     for key, val in kwargs.items():
         where.append(f"{key}='{val}'")
