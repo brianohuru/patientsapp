@@ -153,12 +153,10 @@ class Patient:
             VALUES (
                 '{self.firstName}', '{self.lastName}', '{self.birthDate}', {self.gender.id}, '{self.telephone}', '{self.address}',
                 {self.subCounty.id}, '{self.email}', {self.maritalStatus.id}
-            )
-            RETURNING id;
+            );
             """
-        records = DbConnection.runQuery(query)
-        if records and len(records) > 0:
-            id = records[0][0]
+        id = DbConnection.insertQuery(query)
+        if id:
             return self.get(id=id)
 
     def get(self, id):
@@ -167,7 +165,7 @@ class Patient:
             FROM patient 
             WHERE id={id}
         """
-        result = DbConnection.runQuery(query)
+        result = DbConnection.selectQuery(query)
         for row in result:
             self.id = row[0]
             self.firstName = row[1]
@@ -185,7 +183,7 @@ class Patient:
         query = f"""
             Select id,firstname, lastname, dob, genderid, telephone, address, subcountyid, email, maritalstatusid 
             From patient {stringify_kwargs(kwargs)}"""
-        result = DbConnection.runQuery(query)
+        result = DbConnection.selectQuery(query)
         patients = []
         for row in result:
             patient = Patient()
@@ -220,9 +218,8 @@ class Kin:
             )
             RETURNING id;
             """
-        records = DbConnection.runQuery(query)
-        if records and len(records) > 0:
-            id = records[0][0]
+        id = DbConnection.insertQuery(query)
+        if id:
             return self.get(id=id)
 
     def get(self, id):
@@ -231,7 +228,7 @@ class Kin:
             FROM kin 
             WHERE id={id}
         """
-        result = DbConnection.runQuery(query)
+        result = DbConnection.selectQuery(query)
         for row in result:
             self.id = row[0]
             self.firstName = row[1]
@@ -246,7 +243,7 @@ class Kin:
         query = f"""
             Select id,firstname, lastname, dob, genderid, telephone
             From kin {stringify_kwargs(kwargs)}"""
-        result = DbConnection.runQuery(query)
+        result = DbConnection.selectQuery(query)
         kins = []
         for row in result:
             kin = Kin()
@@ -272,7 +269,7 @@ class PatientKin:
            VALUES ({self.patient.id}, {self.kin.id}, {self.relationship.id})
         RETURNING id;
                     """
-        records = DbConnection.runQuery(query)
+        records = DbConnection.insertQuery(query)
         if records and len(records) > 0:
             id = records[0][0]
             return self.get(id=id)
@@ -283,7 +280,7 @@ class PatientKin:
             FROM patientkin 
             WHERE id={id}
         """
-        result = DbConnection.runQuery(query)
+        result = DbConnection.selectQuery(query)
         for row in result:
             self.id = row[0]
             self.patient = Patient().get(id=row[1])
@@ -296,7 +293,7 @@ class PatientKin:
             Select id,patientid, kinid, relationshipid
             FROM patientkin
             {stringify_kwargs(kwargs)}"""
-        result = DbConnection.runQuery(query)
+        result = DbConnection.selectQuery(query)
         patientkins = []
         for row in result:
             patientkin = PatientKin()
